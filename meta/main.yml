@@ -1,0 +1,15 @@
+---
+dependencies: []
+
+galaxy_info:
+  description: vector
+  role_name: vector_role
+  author: Nagibin Pavel
+  license: "license (BSD, MIT)"
+  min_ansible_version: 2.10
+  platforms:
+    - name: Ubuntu
+      versions:
+        - all
+  galaxy_tags:
+    - vector
