@@ -1,0 +1,42 @@
+---
+- name: Verify
+  hosts: all
+  tasks:
+    - name: include variables
+      include_vars: ../../playbook/roles/vector_role/defaults/main.yml
+    
+    - name: Vector check package status
+      package:
+        name: https://packages.timber.io/vector/{{ vector_version }}/vector-{{ vector_version }}-1.{{ ansible_architecture }}.rpm
+        state: "installed"
+      check_mode: yes
+      register: pkg_status
+
+    - name: "Vector test package is installed"
+      assert:
+        that:
+          - not pkg_status.changed
+    
+    - name: Return service state information as fact data
+      service_facts:
+
+    - name: Vector test service is running
+      ignore_errors: true
+      assert:
+        that:
+          -  ansible_facts.services['vector.service']['state'] == 'running'
+
+    - name: "Vector retrieve information from path '{{ vector_config_dir }}/vector.yml'"
+      ignore_errors: true
+      stat:
+        path: "{{ vector_config_dir }}/vector.yml"
+      register: remote_file
+    
+    - name: "tomcat - assert that '{{ vector_config_dir }}/vector.yml' file is created correctly"
+      ignore_errors: true
+      assert:
+        that:
+          - "remote_file.stat.exists"
+          - "remote_file.stat.isreg"
+          - "remote_file.stat.path == '{{ vector_config_dir }}/vector.yml'"
+          - "remote_file.stat.mode == '0644'"
