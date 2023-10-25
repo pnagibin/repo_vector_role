@@ -5,33 +5,17 @@
     - name: include variables
       include_vars: ../../playbook/roles/vector_role/defaults/main.yml
     
-    - name: Vector check package RPM status 
+    - name: Vector check package status
       package:
         name: https://packages.timber.io/vector/{{ vector_version }}/vector-{{ vector_version }}-1.{{ ansible_architecture }}.rpm
         state: "installed"
       check_mode: yes
-      register: pkg_status_rpm
-      when: ansible_os_family == "RedHat"
+      register: pkg_status
 
-    - name: "Vector test package RPM is installed"
+    - name: "Vector test package is installed"
       assert:
         that:
-          - not pkg_status_rpm.changed
-      when: ansible_os_family == "RedHat"
-
-    - name: Vector check package DEB status
-      package:
-        deb: https://packages.timber.io/vector/{{ vector_version }}/vector_{{ vector_version }}-1_amd64.deb
-        state: "present"
-      check_mode: yes
-      register: pkg_status_deb
-      when: ansible_os_family == "Debian"
-
-    - name: "Vector test package DEB is installed"
-      assert:
-        that:
-          - not pkg_status_deb.changed
-      when: ansible_os_family == "Debian"
+          - not pkg_status.changed
     
     - name: Return service state information as fact data
       service_facts:
@@ -40,7 +24,7 @@
       ignore_errors: true
       assert:
         that:
-          -  ansible_facts.services['vector.service']['state'] != 'running'
+          -  ansible_facts.services['vector.service']['state'] == 'running'
 
     - name: "Vector retrieve information from path '{{ vector_config_dir }}/vector.yml'"
       ignore_errors: true
