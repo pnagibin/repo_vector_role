@@ -121,3 +121,37 @@ null
 ...
   
 ```
+
+# Molecule
+
+## Создаю инфраструктуру командй molecule create
+
+![Alt text](image.png)
+
+## Накатываю роль vetro_role на тестовую инфраструктурой командой molecule converge
+
+![Alt text](image-1.png)
+
+## Запускаю тесты роли командой molecule test
+
+![Alt text](image-2.png)
+
+# Tox
+
+Запускаю команду docker run --privileged=True -v /home/pnagibin/netology/08-ansible-05-testing/playbook/roles/vector_role:/opt/vector-role -w /opt/vector-role -it aragast/netology:latest /bin/bash
+
+Попадаю в контейнер, запускаю команду tox она выполняется часа полтора, и весь вывод в ошибках
+
+![Alt text](image-3.png)
+
+На локальном хосте в директории /home/pnagibin/netology/08-ansible-05-testing/playbook/roles/vector_role создаются виртуальные окружения
+
+![Alt text](image-4.png)
+
+Полагаю, что контейнер aragast/netology:latest не рабочий для этой лабы
+
+Общий смысл понятен, ансибл должен был запуститься в виртуальных окружениях Python разной версии и выполнить все теже самые задачи, но на контейнерах podman.
+
+Теоретический материал к этому модулю просто ужасный, автору модуля максимально отдохнул при разработке этого теоретического материала, изучал по статьсям в интернете.
+
+Прошу засчитать модуль.

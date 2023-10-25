@@ -1,0 +1,38 @@
+---
+dependency:
+  name: galaxy
+  enabled: false
+driver:
+  name: docker
+lint: |
+  yamllint .
+  ansible-lint .
+platforms:
+  - name: clickhouse-01
+    image: docker.io/pycontribs/centos:7
+    pre_build_image: true
+    command: /sbin/init
+    tmpfs:
+      - /run
+      - /tmp
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+    privileged: true
+  - name: clickhouse-02
+    image: geerlingguy/docker-ubuntu1804-ansible
+    pre_build_image: true
+    capabilities:
+      - SYS_ADMIN
+    tmpfs:
+      - /tmp
+      - /run
+      - /run/lock
+    volumes:
+      - '/sys/fs/cgroup:/sys/fs/cgroup:ro'
+    command: '/lib/systemd/systemd'
+    stop_signal: 'RTMIN+3'
+    privileged: true    
+provisioner:
+  name: ansible
+verifier:
+  name: ansible
